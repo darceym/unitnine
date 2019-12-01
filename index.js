@@ -2,7 +2,7 @@ const inquirer = require('inquirer')
 const api = require('./api')
 const fs = require("fs")
 // const markdown = require('./markdown').markdown
-
+const markdown = require('./markdown')
 const start =()=>{
     inquirer
         .prompt([
@@ -21,18 +21,17 @@ const start =()=>{
         ]).then(res=>{
             api(res.github).then((results)=>{
                 console.log(results)
-                // console.log(results.data.name)
-                // console.log(results.data.avatar_url)
-                // console.log(results.data.login)
-                // console.log(results.data.url)
-                // console.log(results.data.location)
-                // console.log(results.data.bio)
-                // console.log(results.data.repos_url)
-                // console.log(results.data.followers_url)
-                // console.log(results.data.following_url)
-                
+                write(markdown(results, res.color), results.data.name)
             });
+            
         })
 }
 
 start()
+const write =(md, name)=>{
+    const docName = name.split(' ').join('')+'.md'
+    fs.writeFile(docName, md, err=>{
+        if(err) console.log(err)
+        else console.log('success')
+    })
+}
